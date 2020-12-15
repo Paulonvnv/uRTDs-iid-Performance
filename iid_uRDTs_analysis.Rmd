@@ -1,5 +1,5 @@
 ---
-title: "Hotspots_report"
+title: "Performance evaluation of an ultra-sensitive rapid diagnosstic test for malaria in the low transmission setting of Zambezi Region, Namibia"
 author: "Lisa M. Prach1, Leah Schrubbe1, Smita Das2, Munyaradzi Tambo3, Sofonias Tessema4, Lindsey Wu5, Mi-Suk Kang Dufour6, Petrina Uusiku7, Gonzalo J. Domingo2, Roly Gosling1, Bryan Greenhouse4, Sophie Allauzen8, Davis Mumbengegwi, Michelle S. Hsiang1."
 date: "September 21th, 2020"
 output:
@@ -24,15 +24,12 @@ knitr::opts_chunk$set(include = TRUE)
 
 .
 
-```{r, echo=FALSE, fig.align= "center", fig.height=20, fig.width=10}
-knitr::include_graphics("flow_chart.jpg")
-```
-<p style="font-size:8pt; font-style:italic">**Figure 1:** Study design flowchart and criteria for hotspot definition.</p>
+
 
 ```{r, echo=FALSE}
 knitr::include_graphics("namibia_map_with_hatches_v2.jpg")
 ```
-<p style="font-size:8pt; font-style:italic">**Figure 2:** Study site map.</p>
+<p style="font-size:8pt; font-style:italic">**Figure 1:** Study site map.</p>
 
 ### Field procedures:
 
@@ -47,15 +44,16 @@ knitr::include_graphics("namibia_map_with_hatches_v2.jpg")
 source("Required_packages.R")
 source("fx_roc_curve.R")
 
-# Upload data with read.dta13----
-Namibia_iid_df<-read.dta13("uRDT_analysis_BW_4146.dta", nonint.factors= T) # import uRDT data base, nonint.factors = T allows to import variable labels (some variables were stored as floats in stata)
-Namibia_eaid_df<-read.dta13("EA_level_dataset_56.dta") # import ea data base
+# Upload iid data with read.dta13----
+Namibia_iid_df<-read.dta13("Data/uRDT_analysis_BW_4146.dta", nonint.factors= T) # import uRDT data base, nonint.factors = T allows to import variable labels (some variables were stored as floats in stata)
+
+#Namibia_eaid_df<-read.dta13("Data/EA_level_dataset_56.dta") # import ea data base
 
 # tibble data.frame by iid and eaid---- 
 
 # iid_df: ----
-# long format tbbile data.frame for iid`s`, just some variables will be used in order to facilitate its processing
-iid_df <- Namibia_iid_df[c("iid", "hhid", "eaid",
+# long format tibble data.frame for iid`s`, just some variables will be used in order to facilitate its processing
+iid_wdf <- Namibia_iid_df[c("iid", "hhid", "eaid",
                            "age", "gender",
                            "body_temp", "fever48",
                            "hrp2_posneg", "hrp2_pg_ml",
@@ -69,42 +67,73 @@ iid_df <- Namibia_iid_df[c("iid", "hhid", "eaid",
                            "hsrdtresult"
                            )]
 
-
-names(iid_df) <- c(names(iid_df[1:7]),"HRP2", "hrp2_pg_ml",
+# Rename variables
+names(iid_wdf) <- c(names(iid_wdf[1:7]),"HRP2", "hrp2_pg_ml",
                            "pan_LDH", "ldh_pan_pg_ml",
                            "pv_LDH", "ldh_pv_pg_ml",
-                           "qPCRposneg", "pden_mean",
+                           "qPCR", "pden_mean",
                            "pf_result", "pm_result",
                            "po_result", "pv_result",
                            "cox3_result",
-                           "rdtresult", "rdtresult_posneg",
-                           "hsrdtresult") # rename tests
+                           "RDT_cat", "RDT",
+                           "uRDT") # rename tests
 
-test<-c("HRP2","qPCR","RDT","uRDT")
-iid_df <- as_tibble(iid_df) # convert to tibble
+
+iid_wdf <- as_tibble(iid_wdf) # convert to tibble
+
+iid_wdf[iid_wdf[["hhid"]] == "XSHH0855" & iid_wdf[["eaid"]] == "10699004",][["hhid"]]<-"XSHH0856" # Change the name of a repeated hhid code
+
+# removing NA's
+for (i in c("pf_result", "pm_result", "po_result", "pv_result")){
+  iid_wdf[[i]] <- as.character(iid_wdf[[i]])
+  iid_wdf[is.na(iid_wdf[[i]]),][[i]] <- "No tested"
+  iid_wdf[[i]] <- as.factor(iid_wdf[[i]])
+}
+
+# Venn diagram to collapse the qualitative PCR results
+# qual_results <- list(Pf = iid_wdf[iid_wdf[["pf_result"]] == "Positive",][["iid"]],
+#                      Pm = iid_wdf[iid_wdf[["pm_result"]] == "Positive",][["iid"]],
+#                      Po = iid_wdf[iid_wdf[["po_result"]] == "Positive",][["iid"]],
+#                      Pv = iid_wdf[iid_wdf[["pv_result"]] == "Positive",][["iid"]])
+# 
+# qual_VennD <- ggVennDiagram(qual_results, label = "count")
+
+iid_wdf %<>% mutate(qual_diag = case_when(
+  pf_result == "Positive" & pm_result == "Negative" ~ "P. falciparum",
+  pf_result == "Positive" & pm_result == "Positive" ~ "Pf Mixed infection",
+  pf_result == "Negative" & pm_result == "Positive" ~ "P. malariae",
+  pf_result == "Negative" & pm_result == "Negative" ~ "Negative",
+  pf_result == "No tested" & pm_result == "Negative" ~ "Negative",
+  pf_result == "No tested" & pm_result == "No tested" ~ "No tested"
+))
 
 # convert to long format
-iid_df %<>% pivot_longer(all_of(test),# define the varibles that will be converted to long format
-                         names_to = "test",# asing a new variable named "test" where the categorical information is going to be stored
-                         values_to = "result")# asign a new varieble named "result" where the result of each test is going to be stored
 
-iid_df[iid_df[["hhid"]] == "XSHH0855" & iid_df[["eaid"]] == "10699004",][["hhid"]]<-"XSHH0856" # Change the name of a repeated hhid code
+test<-c("HRP2", "qPCR", "RDT", "uRDT",
+        "pan_LDH", "pv_LDH"
+        )
+
+
+iid_ldf %<>% pivot_longer(all_of(test),# define the variables that will be converted to long format
+                         names_to = "test",# assign a new variable named "test" where the categorical information is going to be stored
+                         values_to = "result")# assign a new variables named "result" where the result of each test is going to be stored
+
 
 # convert all columns except "age" to a factor
-for (i in names(iid_df[names(iid_df) != "age"])){
-  iid_df[[i]] <- as.factor(as.character(iid_df[[i]]))
+for (i in names(iid_wdf[names(iid_wdf) != "age"])){
+  iid_wdf[[i]] <- as.factor(as.character(iid_wdf[[i]]))
   rm(i)
 }
 
-iid_df %<>% filter(eaid != "10499014",
+iid_wdf %<>% filter(eaid != "10499014",
                   eaid != "10699016",
                   eaid != "10599010",
                   eaid != "10599056")
 
-positive_iids <- list(HRP2 = iid_df[iid_df[["test"]] == "HRP2" & iid_df[["result"]] == "Positive",][["iid"]],
-                      qPCR = iid_df[iid_df[["test"]] == "qPCR" & iid_df[["result"]] == "Positive",][["iid"]],
-                      RDT = iid_df[iid_df[["test"]] == "RDT" & iid_df[["result"]] == "Positive",][["iid"]],
-                      uRDT = iid_df[iid_df[["test"]] == "uRDT" & iid_df[["result"]] == "Positive",][["iid"]])
+positive_iids <- list(HRP2 = iid_wdf[iid_wdf[["test"]] == "HRP2" & iid_wdf[["result"]] == "Positive",][["iid"]],
+                      qPCR = iid_wdf[iid_wdf[["test"]] == "qPCR" & iid_wdf[["result"]] == "Positive",][["iid"]],
+                      RDT = iid_wdf[iid_wdf[["test"]] == "RDT" & iid_wdf[["result"]] == "Positive",][["iid"]],
+                      uRDT = iid_wdf[iid_wdf[["test"]] == "uRDT" & iid_wdf[["result"]] == "Positive",][["iid"]])
 
 iid_VennD <- ggVennDiagram(positive_iids, label = "count")
 
