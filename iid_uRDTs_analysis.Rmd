@@ -43,6 +43,7 @@ knitr::include_graphics("namibia_map_with_hatches_v2.jpg")
 ```{r include = FALSE}
 source("Required_packages.R")
 source("fx_roc_curve.R")
+source("fx_LOD.R")
 
 # Upload iid data with read.dta13----
 Namibia_iid_df<-read.dta13("Data/uRDT_analysis_BW_4146.dta", nonint.factors= T) # import uRDT data base, nonint.factors = T allows to import variable labels (some variables were stored as floats in stata)
@@ -107,16 +108,88 @@ iid_wdf %<>% mutate(qual_diag = case_when(
   pf_result == "No tested" & pm_result == "No tested" ~ "No tested"
 ))
 
+
 # convert to long format
 
 test<-c("HRP2", "qPCR", "RDT", "uRDT",
-        "pan_LDH", "pv_LDH"
-        )
+        "pan_LDH", "pv_LDH", "qual_diag")
 
 
-iid_ldf %<>% pivot_longer(all_of(test),# define the variables that will be converted to long format
+iid_ldf<- iid_wdf %>% pivot_longer(all_of(test),# define the variables that will be converted to long format
                          names_to = "test",# assign a new variable named "test" where the categorical information is going to be stored
                          values_to = "result")# assign a new variables named "result" where the result of each test is going to be stored
+
+
+plot.HRP2_1<-iid_ldf %>%
+  ggplot(aes(x=test, y=log10(hrp2_pg_ml), color = result)) + 
+  geom_violin(position=position_dodge(0.8), trim = T, alpha = 0.5) +
+  geom_jitter(position=position_jitterdodge(0.12), cex=2, alpha = 0.6)+
+  #geom_hline(yintercept = 50, color = "red")+
+  #scale_color_manual(values = c("gray35","dodgerblue4", "firebrick4"))+
+  theme_classic()+
+  ylab("HRP2 pg/ml")+
+  theme(axis.title.y = element_text(size=10), axis.title.x = element_blank())+
+  theme(axis.text= element_text(size=10))+
+  theme(legend.position = "bottom")
+
+plot.HRP2_1
+
+
+plot.HRP2_dot<-iid_ldf %>%
+  ggplot(aes(x=test, y=log10(hrp2_pg_ml), color = result)) + 
+  geom_violin(position=position_dodge(0.8), trim = T, alpha = 0.5) +
+  geom_jitter(position=position_jitterdodge(0.12), cex=2, alpha = 0.6)+
+  #geom_hline(yintercept = 50, color = "red")+
+  #scale_color_manual(values = c("gray35","dodgerblue4", "firebrick4"))+
+  theme_classic()+
+  ylab("HRP2 pg/ml")+
+  theme(axis.title.y = element_text(size=10), axis.title.x = element_blank())+
+  theme(axis.text= element_text(size=10))+
+  theme(legend.position = "bottom")
+
+plot.HRP2_dot
+
+
+plot.HRP2_hist<-ggplot(iid_ldf, aes(x = log10(hrp2_pg_ml), color = result, fill = result)) +
+  geom_histogram(alpha = 0.2, position = "stack") +
+  labs(title = "A) # of screened individuals (iid)\nper Enumeration Area (eaid)",
+       y = "# of eaids",
+       x = "# of iid") +
+  facet_grid(~test)+
+  theme_classic()+
+  theme(plot.title = element_text(hjust = 0, size = 11)) +
+  theme(axis.title.x = element_text(size = 10)) +
+  theme(axis.title.y = element_text(size = 10)) +
+  theme(axis.text = element_text(size = 10))
+
+plot.HRP2_hist
+
+lod.analysis2 <- iid_ldf %>% filter(test == "uRDT") %>% select (hrp2_pg_ml, result)%>%
+  fx_lod(concentration = "hrp2_pg_ml",
+       result = "result",
+       precision = 0.1,
+       from = 0,
+       to = 20000,
+       by = 1,
+       xlab = "HRP2 pg/mL",
+       ylab = "Proportion of positive results")
+
+lod.analysis2$lod.plot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # convert all columns except "age" to a factor
