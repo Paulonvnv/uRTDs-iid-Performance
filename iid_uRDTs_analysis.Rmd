@@ -120,63 +120,66 @@ iid_ldf<- iid_wdf %>% pivot_longer(all_of(test),# define the variables that will
                          values_to = "result")# assign a new variables named "result" where the result of each test is going to be stored
 
 
-plot.HRP2_1<-iid_ldf %>%
+plot.HRP2_dot<-iid_ldf %>% filter(test == "HRP2" | test == "pan_LDH" |
+                                    test == "pv_LDH" | test == "qPCR" |
+                                    test == "RDT" | test == "uRDT") %>%
   ggplot(aes(x=test, y=log10(hrp2_pg_ml), color = result)) + 
   geom_violin(position=position_dodge(0.8), trim = T, alpha = 0.5) +
   geom_jitter(position=position_jitterdodge(0.12), cex=2, alpha = 0.6)+
-  #geom_hline(yintercept = 50, color = "red")+
-  #scale_color_manual(values = c("gray35","dodgerblue4", "firebrick4"))+
+  scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
   theme_classic()+
   ylab("HRP2 pg/ml")+
   theme(axis.title.y = element_text(size=10), axis.title.x = element_blank())+
   theme(axis.text= element_text(size=10))+
-  theme(legend.position = "bottom")
-
-plot.HRP2_1
-
-
-plot.HRP2_dot<-iid_ldf %>%
-  ggplot(aes(x=test, y=log10(hrp2_pg_ml), color = result)) + 
-  geom_violin(position=position_dodge(0.8), trim = T, alpha = 0.5) +
-  geom_jitter(position=position_jitterdodge(0.12), cex=2, alpha = 0.6)+
-  #geom_hline(yintercept = 50, color = "red")+
-  #scale_color_manual(values = c("gray35","dodgerblue4", "firebrick4"))+
-  theme_classic()+
-  ylab("HRP2 pg/ml")+
-  theme(axis.title.y = element_text(size=10), axis.title.x = element_blank())+
-  theme(axis.text= element_text(size=10))+
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+
+  scale_y_continuous(breaks = 0:4, labels = c(1, 10, 100, 1000, 10000))
 
 plot.HRP2_dot
 
-
-plot.HRP2_hist<-ggplot(iid_ldf, aes(x = log10(hrp2_pg_ml), color = result, fill = result)) +
-  geom_histogram(alpha = 0.2, position = "stack") +
-  labs(title = "A) # of screened individuals (iid)\nper Enumeration Area (eaid)",
-       y = "# of eaids",
-       x = "# of iid") +
-  facet_grid(~test)+
+plot.HRP2_hist<-iid_ldf %>% filter(test == "HRP2" | test == "pan_LDH" |
+                                    test == "pv_LDH" | test == "qPCR" |
+                                    test == "RDT" | test == "uRDT") %>%
+  ggplot(aes(x = log10(hrp2_pg_ml), color = result, fill = result)) +
+  geom_histogram(alpha = 0.3, position = "stack", bins = 60) +
+  labs(y = "# of samples or iids",
+       x = "HRP2 pg/ml in log scale",
+       color = "Result",
+       fill = "Result") +
+  facet_wrap(.~test, nrow = 3)+
+  scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
+  scale_fill_manual(values = c("dodgerblue4", "firebrick4"))+
   theme_classic()+
   theme(plot.title = element_text(hjust = 0, size = 11)) +
   theme(axis.title.x = element_text(size = 10)) +
   theme(axis.title.y = element_text(size = 10)) +
-  theme(axis.text = element_text(size = 10))
+  theme(axis.text = element_text(size = 10))+
+  scale_x_continuous(breaks = 0:4, labels = c(1, 10, 100, 1000, 10000))
 
 plot.HRP2_hist
 
-lod.analysis2 <- iid_ldf %>% filter(test == "uRDT") %>% select (hrp2_pg_ml, result)%>%
+lod.RDT <- iid_ldf %>% filter(test == "RDT") %>% select (hrp2_pg_ml, result)%>%
   fx_lod(concentration = "hrp2_pg_ml",
        result = "result",
        precision = 0.1,
        from = 0,
        to = 20000,
-       by = 1,
+       by = 100,
        xlab = "HRP2 pg/mL",
-       ylab = "Proportion of positive results")
+       ylab = "Proportion of RDT positive results")
 
-lod.analysis2$lod.plot
+lod.RDT$lod.plot
 
+lod.uRDT <- iid_ldf %>% filter(test == "uRDT") %>% select (hrp2_pg_ml, result)%>%
+  fx_lod(concentration = "hrp2_pg_ml",
+       result = "result",
+       precision = 0.1,
+       from = 0,
+       to = 20000,
+       by = 100,
+       xlab = "HRP2 pg/mL",
+       ylab = "Proportion of uRDT positive results")
 
+lod.uRDT$lod.plot
 
 
 
