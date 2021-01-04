@@ -202,14 +202,14 @@ plot.HRP2_dot<-iid_ldf %>% filter(test == "HRP2" | test == "qPCR" |
 
 plot.HRP2_dot
 
-plot.HRP2_hist<-iid_ldf %>% filter(test == "qPCR" | test == "RDT" | test == "uRDT") %>%
+plot.HRP2_hist<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
   ggplot(aes(x = log10(hrp2_pg_ml), color = result, fill = result)) +
   geom_histogram(position = "stack", bins = 60) +
   labs(y = "# of samples or iids",
-       x = "HRP2 pg/ml in log scale",
+       x = "HRP2 pg/mL in log10 scale",
        color = "Result",
        fill = "Result") +
-  facet_wrap(.~test, nrow = 3)+
+  facet_wrap(.~test, nrow = 2)+
   scale_color_manual(values = c("dodgerblue4", "firebrick3"))+
   scale_fill_manual(values = c("dodgerblue4", "firebrick3"))+
   theme_classic()+
@@ -221,7 +221,7 @@ plot.HRP2_hist<-iid_ldf %>% filter(test == "qPCR" | test == "RDT" | test == "uRD
 
 plot.HRP2_hist
 
-plot.HRP2_prop<-iid_ldf %>% filter(test == "qPCR" | test == "RDT" | test == "uRDT") %>%
+plot.HRP2_prop<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
   fx_prop.hist.plot(bins = 60,
                   quant.var = "hrp2_pg_ml",
                   qual.var = "result",
@@ -229,11 +229,11 @@ plot.HRP2_prop<-iid_ldf %>% filter(test == "qPCR" | test == "RDT" | test == "uRD
                   log.scale = TRUE,
                   colors = c("dodgerblue4", "firebrick3"),
                   y.title = "Proportion of samples or iids",
-                  x.title = "HRP2 pg/ml in log10 scale",
-                  legend.title = "Result")
+                  x.title = "HRP2 pg/mL in log10 scale",
+                  legend.title = "Result",
+                  legend.position = "none")
 
 plot.HRP2_prop
-
 
 
 plot.qPCR_dot<-iid_ldf %>% filter(test == "HRP2" | test == "qPCR" |
@@ -252,14 +252,14 @@ plot.qPCR_dot<-iid_ldf %>% filter(test == "HRP2" | test == "qPCR" |
 
 plot.qPCR_dot
 
-plot.qPCR_hist<-iid_ldf %>% filter(test == "HRP2" | test == "RDT" | test == "uRDT") %>%
+plot.qPCR_hist<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
   ggplot(aes(x = log10(pden_mean), color = result, fill = result)) +
   geom_histogram(position = "stack", bins = 60) +
   labs(y = "# of samples or iids",
-       x = "Parasites/mL in log scale",
+       x = "Parasites/mL in log10 scale",
        color = "Result",
        fill = "Result") +
-  facet_wrap(.~test, nrow = 3)+
+  facet_wrap(.~test, nrow = 2)+
   scale_color_manual(values = c("dodgerblue4", "firebrick3"))+
   scale_fill_manual(values = c("dodgerblue4", "firebrick3"))+
   theme_classic()+
@@ -271,7 +271,7 @@ plot.qPCR_hist<-iid_ldf %>% filter(test == "HRP2" | test == "RDT" | test == "uRD
 
 plot.qPCR_hist
 
-plot.qPCR_prop<-iid_ldf %>% filter(test == "HRP2" | test == "RDT" | test == "uRDT") %>%
+plot.qPCR_prop<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
   fx_prop.hist.plot(bins = 20,
                   quant.var = "pden_mean",
                   qual.var = "result",
@@ -280,7 +280,8 @@ plot.qPCR_prop<-iid_ldf %>% filter(test == "HRP2" | test == "RDT" | test == "uRD
                   colors = c("dodgerblue4", "firebrick3"),
                   y.title = "Proportion of samples or iids",
                   x.title = "Parasites/mL in log10 scale",
-                  legend.title = "Result")
+                  legend.title = "Result",
+                  legend.position = "none")
 
 plot.qPCR_prop
 
@@ -292,21 +293,22 @@ lod.hrp2.plot <- lod.hrp2 %>% ggplot(aes(x = concentration, y = prob, color = te
     geom_vline(xintercept = c(lod.uRDT.hrp2$lod$lod, lod.uRDT.hrp2$lod$lower, lod.uRDT.hrp2$lod$upper), color = c("firebrick3", "firebrick1", "firebrick1"), size = 1, linetype = c(1,3,3)) +
   geom_point(x = lod.RDT.hrp2$lod$lod, y = 0.95, color = "black") +
   geom_point(x = lod.uRDT.hrp2$lod$lod, y = 0.95, color = "black") +
-  geom_text(aes(x = lod.RDT.hrp2$lod$lod*1.1, y = 0.95), label = round(lod.RDT.hrp2$lod$lod, 2), color = "black", size = 3.2 )+
-  geom_text(aes(x = lod.uRDT.hrp2$lod$lod*1.1, y = 0.95), label = round(lod.uRDT.hrp2$lod$lod, 2), color = "black", size = 3.2 )+
+  geom_text(aes(x = lod.RDT.hrp2$lod$lod*1.1, y = 0.9), label = round(lod.RDT.hrp2$lod$lod, 2), color = "black", size = 3.2 )+
+  geom_text(aes(x = lod.uRDT.hrp2$lod$lod*0.8, y = 0.95), label = round(lod.uRDT.hrp2$lod$lod, 2), color = "black", size = 3.2 )+
     theme_bw() +
   scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
   scale_fill_manual(values = c("dodgerblue4", "firebrick4"))+
     labs(y = "Proportion of positive results",
-         x = "Parasites/mL",
+         x = "HRP2 pg/mL",
          color = "Test",
          fill = "Test") +
     theme(plot.title = element_text(hjust = 0, size = 11),
           axis.title = element_text(size = 10),
           axis.text = element_text(size = 10),
-          legend.position = c(0.9,0.15)) +
+          legend.position = "none") +
     scale_x_continuous(expand = c(0, 0.02*max(lod.hrp2$concentration)), breaks = seq(0, 20000, 2000)) +
-    scale_y_continuous(expand = c(0, 0.02*max(lod.hrp2$upper)), breaks = seq(0, 1, 0.1))
+    scale_y_continuous(expand = c(0, 0.02*max(lod.hrp2$upper)), breaks = seq(0, 1, 0.1))+
+  theme(axis.text.x = element_text(angle = 45,vjust = 0.5))
 
 lod.hrp2.plot
 
@@ -319,8 +321,8 @@ lod.qPCR.plot <- lod.qpcr %>% ggplot(aes(x = concentration, y = prob, color = te
     geom_vline(xintercept = c(lod.uRDT.qpcr$lod$lod, lod.uRDT.qpcr$lod$lower), color = c("firebrick3", "firebrick1"), size = 1, linetype = c(1,3)) +
   geom_point(x = lod.RDT.qpcr$lod$lod, y = 0.95, color = "black") +
   geom_point(x = lod.uRDT.qpcr$lod$lod, y = 0.95, color = "black") +
-  geom_text(aes(x = lod.RDT.qpcr$lod$lod*1.1, y = 0.95), label = round(lod.RDT.qpcr$lod$lod, 2), color = "black", size = 3.2 )+
-  geom_text(aes(x = lod.uRDT.qpcr$lod$lod*0.9, y = 0.95), label = round(lod.uRDT.qpcr$lod$lod, 2), color = "black", size = 3.2 )+
+  geom_text(aes(x = lod.RDT.qpcr$lod$lod*1.1, y = 0.9), label = round(lod.RDT.qpcr$lod$lod, 2), color = "black", size = 3.2 )+
+  geom_text(aes(x = lod.uRDT.qpcr$lod$lod*0.8, y = 0.95), label = round(lod.uRDT.qpcr$lod$lod, 2), color = "black", size = 3.2 )+
     theme_bw() +
   scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
   scale_fill_manual(values = c("dodgerblue4", "firebrick4"))+
@@ -331,21 +333,18 @@ lod.qPCR.plot <- lod.qpcr %>% ggplot(aes(x = concentration, y = prob, color = te
     theme(plot.title = element_text(hjust = 0, size = 11),
           axis.title = element_text(size = 10),
           axis.text = element_text(size = 10),
-          legend.position = c(0.9,0.15)) +
+          legend.position = "none") +
     scale_x_continuous(expand = c(0, 0.02*max(lod.qpcr$concentration)), breaks = seq(0, 20000, 2000)) +
-    scale_y_continuous(expand = c(0, 0.02*max(lod.qpcr$upper)), breaks = seq(0, 1, 0.1))
+    scale_y_continuous(expand = c(0, 0.02*max(lod.qpcr$upper)), breaks = seq(0, 1, 0.1))+
+  theme(axis.text.x = element_text(angle = 45,vjust = 0.5))
 
 lod.qPCR.plot
 
 plot1 <- plot_grid(plot_grid(plot.HRP2_hist,
-                        plot.qPCR_hist,
-                        ncol = 2),
-                        plot_grid(plot.HRP2_prop$prop.plot,
-                        plot.qPCR_prop$prop.plot,
-                        ncol = 2),
-                        plot_grid(lod.hrp2.plot,
-                        lod.qPCR.plot,
-                        ncol = 2), nrow = 3)
+                        plot.HRP2_prop$prop.plot, lod.hrp2.plot,
+                        ncol = 3),plot_grid(plot.qPCR_hist,
+                        plot.qPCR_prop$prop.plot, lod.qPCR.plot,
+                        ncol = 3), nrow = 2)
 
 
 

@@ -50,7 +50,7 @@ fx_lod <- function(data = NULL,
       conc = conc - precision
     }
     conc.inf.n <- (log(0.95/(1 - 0.95)) - 1.96*pred.sup.n$se.fit - coef$Intercept)/coef$Concentration  
-    data2$lower < conc.inf.n  
+    data2$lower <- conc.inf.n  
     }
   
   

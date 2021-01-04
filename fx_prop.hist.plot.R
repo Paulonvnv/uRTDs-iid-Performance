@@ -9,7 +9,8 @@ fx_prop.hist.plot <- function(data = NULL,
                               colors = c("dodgerblue4", "firebrick4"),
                               y.title = "Proportion of samples",
                               x.title = "Concentration in log10 scale",
-                              legend.title = "Result"){
+                              legend.title = "Result",
+                              legend.position = "right"){
   if (log.scale){
     data[data[[quant.var]]!=0,][[quant.var]] <- log10(data[data[[quant.var]]!=0,][[quant.var]])
     data1 <- tibble(lower = seq(0,
@@ -62,7 +63,9 @@ fx_prop.hist.plot <- function(data = NULL,
          x = x.title,
          color = legend.title,
          fill = legend.title)+
-    theme(legend.position = "bottom")
+    theme(axis.title.x = element_text(size = 10)) +
+    theme(axis.title.y = element_text(size = 10)) +
+    theme(axis.text = element_text(size = 10), legend.position = legend.position)
   
   if (log.scale){
     prop.plot <- prop.plot +
