@@ -1,8 +1,12 @@
 ---
-title: "Performance evaluation of an ultra-sensitive rapid diagnosstic test for malaria in the low transmission setting of Zambezi Region, Namibia"
-author: "Lisa M. Prach1, Leah Schrubbe1, Smita Das2, Munyaradzi Tambo3, Sofonias Tessema4, Lindsey Wu5, Mi-Suk Kang Dufour6, Petrina Uusiku7, Gonzalo J. Domingo2, Roly Gosling1, Bryan Greenhouse4, Sophie Allauzen8, Davis Mumbengegwi, Michelle S. Hsiang1."
+title: Performance evaluation of an ultra-sensitive rapid diagnosstic test for malaria
+  in the low transmission setting of Zambezi Region, Namibia
+author: Lisa M. Prach1, Leah Schrubbe1, Smita Das2, Munyaradzi Tambo3, Sofonias Tessema4,
+  Lindsey Wu5, Mi-Suk Kang Dufour6, Petrina Uusiku7, Gonzalo J. Domingo2, Roly Gosling1,
+  Bryan Greenhouse4, Sophie Allauzen8, Davis Mumbengegwi, Michelle S. Hsiang1.
 date: "September 21th, 2020"
 output:
+  word_document: default
   html_document: default
 editor_options:
   chunk_output_type: console
@@ -181,12 +185,108 @@ descriptives <- list(
                                uRDT == "Positive") %>% nrow(),
   # Number of all positive samples detected by HRP2                   
   npos_HRP2 = iid_ldf %>% filter(test == "HRP2", result == "Positive")%>%nrow(),
+  # descriptive stats hrp2_pg_ml
+  median_HRP2 = tibble(median = iid_wdf %>%
+                   filter(HRP2=="Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   median(),
+                 q25 = iid_wdf %>%
+                   filter(HRP2=="Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   quantile(probs = .25),
+                 q75 = iid_wdf %>%
+                   filter(HRP2=="Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   quantile(probs = .75)),
   # Number of all positive samples detected by qPCR
   npos_qPCR = iid_ldf %>% filter(test == "qPCR", result == "Positive")%>%nrow(),
+  # descriptive stats pden_mean
+  median_qPCR = tibble(median = iid_wdf %>%
+                   filter(qPCR=="Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   median(),
+                 q25 = iid_wdf %>%
+                   filter(qPCR=="Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   quantile(probs = .25),
+                 q75 = iid_wdf %>%
+                   filter(qPCR=="Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   quantile(probs = .75)),
   # Number of all positive samples detected by RDTs
   npos_RDT = iid_ldf %>% filter(test == "RDT", result == "Positive")%>%nrow(),
+  # descriptive stats hrp2_pg_ml in RDT postive samples
+  median_HRP2_RDT = tibble(median = iid_wdf %>%
+                   filter(HRP2=="Positive",RDT == "Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   median(),
+                 q25 = iid_wdf %>%
+                   filter(HRP2=="Positive", RDT == "Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   quantile(probs = .25),
+                 q75 = iid_wdf %>%
+                   filter(HRP2=="Positive", RDT == "Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   quantile(probs = .75)),
+  # descriptive stats pden_mean in RDT positive samples
+  median_qPCR_RDT = tibble(median = iid_wdf %>%
+                   filter(qPCR=="Positive", RDT=="Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   median(),
+                 q25 = iid_wdf %>%
+                   filter(qPCR=="Positive", RDT == "Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   quantile(probs = .25),
+                 q75 = iid_wdf %>%
+                   filter(qPCR=="Positive", RDT == "Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   quantile(probs = .75)),
   # Number of all positive samples detected by uRDTs
   npos_uRDT = iid_ldf %>% filter(test == "uRDT", result == "Positive")%>%nrow(),
+    # descriptive stats hrp2_pg_ml in RDT postive samples
+  median_HRP2_uRDT = tibble(median = iid_wdf %>%
+                   filter(HRP2=="Positive",uRDT == "Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   median(),
+                 q25 = iid_wdf %>%
+                   filter(HRP2=="Positive", uRDT == "Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   quantile(probs = .25),
+                 q75 = iid_wdf %>%
+                   filter(HRP2=="Positive", uRDT == "Positive")%>%
+                   select(hrp2_pg_ml)%>%
+                   unlist()%>%
+                   quantile(probs = .75)),
+  # descriptive stats pden_mean in uRDT positive samples
+  median_qPCR_uRDT = tibble(median = iid_wdf %>%
+                   filter(qPCR=="Positive", uRDT=="Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   median(),
+                 q25 = iid_wdf %>%
+                   filter(qPCR=="Positive", uRDT == "Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   quantile(probs = .25),
+                 q75 = iid_wdf %>%
+                   filter(qPCR=="Positive", uRDT == "Positive")%>%
+                   select(pden_mean)%>%
+                   unlist()%>%
+                   quantile(probs = .75)),
   # Number of all positive samples detected by pan_LDH
   npos_pan_LDH = iid_ldf %>% filter(test == "pan_LDH", result == "Positive")%>%nrow(),
   # Number of all positive samples detected by pv_LDH
@@ -294,13 +394,15 @@ iid_VennD_4tests <- ggVennDiagram(positive_iids[c("HRP2", "qPCR", "RDT", "uRDT")
 
 
 
-qPCR_vennD<- ggVennDiagram(list(only_qPCR = iid_wdf %>% filter(HRP2 !="Positive",
+qPCR_vennD<- ggVennDiagram(list(qPCR = iid_ldf[iid_ldf[["test"]] == "qPCR" & iid_ldf[["result"]] == "Positive",][["iid"]],
+                                only_qPCR = iid_wdf %>% filter(HRP2 !="Positive",
                                qPCR =="Positive",
                                RDT !="Positive",
                                uRDT !="Positive")%>%select(iid)%>%unlist,
      # pan_LDH = iid_ldf[iid_ldf[["test"]] == "pan_LDH" & iid_ldf[["result"]] == "Positive",][["iid"]],
      # pv_LDH = iid_ldf[iid_ldf[["test"]] == "pv_LDH" & iid_ldf[["result"]] == "Positive",][["iid"]],
-     Pf = qual_results$Pf), label = "count")
+     Pf = qual_results$Pf,
+     Pm = qual_results$Pm), label = "count")
 
 
 
@@ -411,48 +513,34 @@ lod.qpcr2 <- rbind(lod.RDT.qpcr2$glm.lod,lod.uRDT.qpcr2$glm.lod)
 Across `r descriptives$neaids` EAs surveyed, `r descriptives$niids` individuals from `r descriptives$nhhids` randomly selected households were tested for malaria using `r descriptives$ntests` different diagnostic test (`r descriptives$tests_list`). The median age of participants was `r median(iid_wdf$age)` years (IQR: `r paste(quantile(iid_wdf$age,.25), quantile(iid_wdf$age,.75), sep = " - ")`) and the proportion of female and males were `r gender_prop %>% filter(gender == "Female") %>% select(prop)` (95% CI: `r gender_prop %>% filter(gender == "Female") %>% select(lower, upper) %>% paste(collapse = " - ")`) and `r gender_prop %>% filter(gender == "Male") %>% select(prop)` (95% CI: `r gender_prop %>% filter(gender == "Male") %>% select(lower, upper) %>% paste(collapse = " - ")`), respectively. 
 
 ### Consistncy among tests
-`r descriptives$npos_any4` samples were positive by any of the tests. `r descriptives$npos_HRP2` samples were positive by HRP2 (`r descriptives$only_HRP2` samples were detected positive only by HRP2 and not by the other tests), `r descriptives$npos_qPCR` by qPCR (`r descriptives$only_qPCR` only by qPCR), `r descriptives$npos_RDT` by RDTs (`r descriptives$only_RDT` only by RDT), and `r descriptives$npos_uRDT` by uRDTs (`r descriptives$only_uRDT` only by uRDTs). Regarding the `r descriptives$only_qPCR` that were detected only by qPCR, none of them were detected by pan_DLH, `r descriptives$pos_qPCR_pvLDH` were detected by pv_LDH test; and `r sum(descriptives$pos_qPCR_qualdiag[descriptives$pos_qPCR_qualdiag$qual_diag == "P. falciparum" | descriptives$pos_qPCR_qualdiag$qual_diag == "Pf Mixed infection",][["nSamples"]])` were P. falciparum positive by the qPCR qualitative test (one of them was a mixed infection with P. malariae).
+`r descriptives$npos_any4` samples were positive by any of the tests. `r descriptives$npos_HRP2` samples were positive by HRP2 (`r descriptives$only_HRP2` samples were detected positive only by HRP2 and not by the other tests, Figure 2A), and the median concentration of HRP2 protein was `r descriptives$median_HRP2$median` pg/mL (95% CI: `r descriptives$median_HRP2$q25` - `r descriptives$median_HRP2$q75`). For qPCR, `r descriptives$npos_qPCR` samples were positives (`r descriptives$only_qPCR` only by qPCR) and the median parasite density was `r descriptives$median_qPCR$median` parasites/uL (95% CI: `r descriptives$median_qPCR$q25` - `r descriptives$median_qPCR$q75`). For RDTs, `r descriptives$npos_RDT` samples were positives (`r descriptives$only_RDT` only by RDT), and the median of HRP2 concentration and parasite density along RDT positive samples were `r descriptives$median_HRP2_RDT$median` pg/mL (95% CI: `r descriptives$median_HRP2_RDT$q25` - `r descriptives$median_HRP2_RDT$q75`) and `r descriptives$median_qPCR_RDT$median` parasites/uL (95% CI: `r descriptives$median_qPCR_RDT$q25` - `r descriptives$median_qPCR_RDT$q75`), respectively. Regarding uRDTs, `r descriptives$npos_uRDT` were positives (`r descriptives$only_uRDT` only by uRDTs), and the median of HRP2 concentration and parasite density along uRDT positive samples were `r descriptives$median_HRP2_uRDT$median` pg/mL (95% CI: `r descriptives$median_HRP2_uRDT$q25` - `r descriptives$median_HRP2_uRDT$q75`) and `r descriptives$median_qPCR_uRDT$median` parasites/uL (95% CI: `r descriptives$median_qPCR_uRDT$q25` - `r descriptives$median_qPCR_uRDT$q75`), respectively (Figures 3A and 3D show the distribution of positive samples by HRP2 concentration and parasite density, respectively). Regarding the `r descriptives$only_qPCR` that were detected only by qPCR, `r sum(descriptives$pos_qPCR_qualdiag[descriptives$pos_qPCR_qualdiag$qual_diag == "P. falciparum" | descriptives$pos_qPCR_qualdiag$qual_diag == "Pf Mixed infection",][["nSamples"]])` were P. falciparum positive by the qPCR qualitative test (one of them was a mixed infection with P. malariae), and one sample was P. malariae (Figure 2B).
 
-```{r include = T, echo=FALSE, warning=FALSE,message=FALSE, fig.width= 10, fig.height=6, fig.align = "center"}
+```{r include = T, echo=FALSE, warning=FALSE,message=FALSE, fig.width= 10, fig.height=5, fig.align = "center"}
 
-plot_grid(pyr_plot, plot_grid(iid_VennD_4tests, qPCR_vennD, nrow = 2, labels = c("B", "C"), label_size = 11, label_fontface = "plain"), ncol = 2, labels = c("A", ""), label_size = 11, label_fontface = "plain")
+plot_grid(iid_VennD_4tests, qPCR_vennD, ncol = 2, labels = c("A", "B"), label_size = 11, label_fontface = "plain")
 
 ```
-<p style="font-size:8pt; font-style:italic">**Figure 2:** **A)** Population pyramid **B)** Consistency among HRP2, qPCR, RDT, and uRDT positive results; **C)** Consistency among samples only positive by qPCR but not by HRP2, RDT and uRDT, with pan_LDH, pv_LDH and qualitative qPCR.</p>
+<p style="font-size:8pt; font-style:italic">**Figure 2:** **A)** Consistency among HRP2, qPCR, RDT, and uRDT positive results; **B)** Consistency among samples only positive by qPCR but not by HRP2, RDT and uRDT (qPCR_only), with qualitative qPCR results (Pf and Pm, P. falciparum and P. malariae respectively).</p>
 
 ### Performance of RDTs and uRDTs 
-Using HRP2 as standard method, RDTs detected `r performance_HRP2_all$conf_table %>% filter(test == "RDT", kind_result == "tp") %>% select(count)` out of the  `r descriptives$npos_HRP2` positive samples detected by HRP2 test, while uRDTs detected `r performance_HRP2_all$conf_table %>% filter(test == "uRDT", kind_result == "tp") %>% select(count)`. In both cases, the proportion of positive detected samples increased as a function of the concentration of the HRP2 protein present in the sample. The limit of detection, defined as the minimum concentration at which test detect more than 95% of the positive samples, of RDTs and uRDTs were `r lod.RDT.hrp2$lod$lod` and `r lod.RDT.hrp2$lod$lod`, respectively. In this way, the overall sensitivity and specificity for RDTs were `r performance_HRP2_all$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_HRP2_all$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_HRP2_all$metrics %>% filter(test == "RDT", metric == "spec") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_HRP2_all$metrics %>% filter(test == "RDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), and for uRDT they were `r performance_HRP2_all$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2_all$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_HRP2_all$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2_all$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), respectively. Constraining the analysis to samples with HRP2 concentration greater than 800pg/mL, the sensitivity and specificity for RDTs were `r performance_HRP2.800high$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)%>% round(digits = 2)`  (95% CI: `r performance_HRP2.800high$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_HRP2.800high$metrics %>% filter(test == "RDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2.800high$metrics %>% filter(test == "RDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`); and for uRDT, were `r performance_HRP2.800high$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2.800high$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_HRP2.800high$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2.800high$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), respectively.
+Using HRP2 as standard method, RDTs detected `r performance_HRP2_all$conf_table %>% filter(test == "RDT", kind_result == "tp") %>% select(count)` out of the  `r descriptives$npos_HRP2` positive samples detected by HRP2 test, while uRDTs detected `r performance_HRP2_all$conf_table %>% filter(test == "uRDT", kind_result == "tp") %>% select(count)`. In both cases, the proportion of positive detected samples increased as a function of the concentration of the HRP2 protein present in the sample (Figure 3B). The limit of detection, defined as the minimum concentration at which test detect more than 95% of the positive samples, of RDTs and uRDTs were `r lod.RDT.hrp2$lod$lod` and `r lod.uRDT.hrp2$lod$lod`, respectively (Figure 3C). In this way, the overall sensitivity and specificity for RDTs were `r performance_HRP2_all$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_HRP2_all$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_HRP2_all$metrics %>% filter(test == "RDT", metric == "spec") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_HRP2_all$metrics %>% filter(test == "RDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), and for uRDT they were `r performance_HRP2_all$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2_all$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_HRP2_all$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2_all$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), respectively. Constraining the analysis to samples with HRP2 concentration greater than 800pg/mL, the sensitivity and specificity for RDTs were `r performance_HRP2.800high$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)%>% round(digits = 2)`  (95% CI: `r performance_HRP2.800high$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_HRP2.800high$metrics %>% filter(test == "RDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2.800high$metrics %>% filter(test == "RDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`); and for uRDT, were `r performance_HRP2.800high$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2.800high$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_HRP2.800high$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_HRP2.800high$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), respectively.
 
 Performance of RDTs and uRDTs were worse when using qPCR as standard method, RDTs and uRDTs detected `r performance_qPCR_all$conf_table %>% filter(test == "RDT", kind_result == "tp") %>% select(count) %>% unlist()` 
-and `r performance_qPCR_all$conf_table %>% filter(test == "uRDT", kind_result == "tp") %>% select(count) %>% unlist()`  out of the  `r descriptives$npos_qPCR` positive samples detected by qPCR test, respectively. Moreover, the proportion of positive detected samples did not increased as a function of the parasite density of the sample, and the limit of detection of RDTs and uRDTs were `r lod.RDT.qpcr$lod$lod` and `r lod.RDT.qpcr$lod$lod` respectively. Thus, the overall sensitivity and specificity for RDTs were `r performance_qPCR_all$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR_all$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_qPCR_all$metrics %>% filter(test == "RDT", metric == "spec") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR_all$metrics %>% filter(test == "RDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), and for uRDT they were `r performance_qPCR_all$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_qPCR_all$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_qPCR_all$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_qPCR_all$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), respectively. Restricting the analysis to samples with a parasitemia greater than 100 parasites/uL, the sensitivity and specificity for RDTs were `r performance_qPCR.100high$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)%>% round(digits = 2)` (95% CI: `r performance_qPCR.100high$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_qPCR.100high$metrics %>% filter(test == "RDT", metric == "spec") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR.100high$metrics %>% filter(test == "RDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`); and for uRDT, were `r performance_qPCR.100high$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_qPCR.100high$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_qPCR.100high$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_qPCR.100high$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), respectively. However, when from the set of qPCR positive samples, the HRP2 negative samples and samples with more than 1000 parasites/uL were excluded, LOD for RDTs and uRDTs were `r lod.RDT.qpcr2$lod$lod` and `r lod.RDT.qpcr2$lod$lod` respectively. Furthermore, the sensitivity for both tests also increased. Sensitivity for RDTs was `r performance_qPCR.2$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR.2$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and for uRDT it was `r performance_qPCR.2$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR.2$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`).
+and `r performance_qPCR_all$conf_table %>% filter(test == "uRDT", kind_result == "tp") %>% select(count) %>% unlist()`  out of the  `r descriptives$npos_qPCR` positive samples detected by qPCR test, respectively. Moreover, the proportion of positive detected samples did not increased as a function of the parasite density of the sample (Figure 3E), and the limit of detection of RDTs and uRDTs were `r lod.RDT.qpcr$lod$lod` and `r lod.uRDT.qpcr$lod$lod` respectively (Figure 3F). Thus, the overall sensitivity and specificity for RDTs were `r performance_qPCR_all$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR_all$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_qPCR_all$metrics %>% filter(test == "RDT", metric == "spec") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR_all$metrics %>% filter(test == "RDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), and for uRDT they were `r performance_qPCR_all$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_qPCR_all$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_qPCR_all$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_qPCR_all$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), respectively. Restricting the analysis to samples with a parasitemia greater than 100 parasites/uL, the sensitivity and specificity for RDTs were `r performance_qPCR.100high$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)%>% round(digits = 2)` (95% CI: `r performance_qPCR.100high$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_qPCR.100high$metrics %>% filter(test == "RDT", metric == "spec") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR.100high$metrics %>% filter(test == "RDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`); and for uRDT, were `r performance_qPCR.100high$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_qPCR.100high$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and `r performance_qPCR.100high$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(value)%>% round(digits = 2)`  (95% CI: `r performance_qPCR.100high$metrics %>% filter(test == "uRDT", metric == "spec") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`), respectively. However, when from the set of all qPCR positive samples, the HRP2 negative samples (assuming HRP2 gene deletion of these samples) and samples with more than 1000 parasites/uL (low number of samples) were excluded, LOD for RDTs and uRDTs were `r lod.RDT.qpcr2$lod$lod` and `r lod.uRDT.qpcr2$lod$lod`, respectively (Figure 3H). Furthermore, the sensitivity for both tests also increased. Sensitivity for RDTs was `r performance_qPCR.2$metrics %>% filter(test == "RDT", metric == "sens") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR.2$metrics %>% filter(test == "RDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`) and for uRDT it was `r performance_qPCR.2$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(value)%>% round(digits = 2)` (95% CI: `r performance_qPCR.2$metrics %>% filter(test == "uRDT", metric == "sens") %>% select(lower, upper) %>% round(digits = 2)%>% paste0(collapse= " - ")`).
 
 ```{r include = T, echo=FALSE, warning=FALSE,message=FALSE, fig.width= 10, fig.height=10, fig.align = "center"}
 
-plot.HRP2_dot<-iid_ldf %>% filter(test == "HRP2" | test == "qPCR" |
-                                    test == "RDT" | test == "uRDT") %>%
-  ggplot(aes(x=test, y=log10(hrp2_pg_ml), color = result)) + 
-  geom_violin(position=position_dodge(width = .8), trim = T, alpha = 0.5) +
-  geom_jitter(position=position_jitterdodge(0.12), cex=2, alpha = 0.6)+
-  geom_hline(yintercept = c(2.35, log10(lod.uRDT.hrp2$lod$lod), log10(lod.RDT.hrp2$lod$lod), 3.45))+
-  scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
-  theme_classic()+
-  ylab("HRP2 pg/ml")+
-  theme(axis.title.y = element_text(size=10), axis.title.x = element_blank())+
-  theme(axis.text= element_text(size=10))+
-  theme(legend.position = "bottom")+
-  scale_y_continuous(breaks = 0:4, labels = c(1, 10, 100, 1000, 10000))
-
-
 plot.HRP2_hist<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
-  ggplot(aes(x = log10(hrp2_pg_ml), color = result, fill = result)) +
+  mutate(result2 = case_when(result=="Negative"~"g1",
+                             test == "RDT"&result=="Positive"~"g2",
+                             test == "uRDT"&result=="Positive"~"g3"))%>%
+  ggplot(aes(x = log10(hrp2_pg_ml), color = result2, fill = result2)) +
   geom_histogram(position = "stack", bins = 60) +
   labs(y = "# of samples or iids",
-       x = "HRP2 pg/mL in log10 scale",
-       color = "Result",
-       fill = "Result") +
+       x = "HRP2 pg/mL in log10 scale") +
   facet_wrap(.~test, nrow = 2)+
-  scale_color_manual(values = c("dodgerblue4", "firebrick3"))+
-  scale_fill_manual(values = c("dodgerblue4", "firebrick3"))+
+  scale_color_manual(values = c("dodgerblue4", "coral", "firebrick3"))+
+  scale_fill_manual(values = c("dodgerblue4", "coral", "firebrick3"))+
   theme_classic()+
   theme(plot.title = element_text(hjust = 0, size = 11)) +
   theme(axis.title.x = element_text(size = 10)) +
@@ -462,76 +550,32 @@ plot.HRP2_hist<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
 
 
 plot.HRP2_prop<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
+  mutate(result2 = case_when(result=="Negative"~"g1",
+                             test == "RDT"&result=="Positive"~"g2",
+                             test == "uRDT"&result=="Positive"~"g3"))%>%
   fx_prop.hist.plot(bins = 60,
                   quant.var = "hrp2_pg_ml",
-                  qual.var = "result",
+                  qual.var = "result2",
                   group.var = "test",
                   log.scale = TRUE,
-                  colors = c("dodgerblue4", "firebrick3"),
+                  colors = c("dodgerblue4","coral", "firebrick3"),
                   y.title = "Proportion of samples or iids",
                   x.title = "HRP2 pg/mL in log10 scale",
                   legend.title = "Result",
                   legend.position = "none")
 
-
-plot.qPCR_dot<-iid_ldf %>% filter(test == "HRP2" | test == "qPCR" |
-                                    test == "RDT" | test == "uRDT") %>%
-  ggplot(aes(x=test, y=log10(pden_mean), color = result)) + 
-  geom_violin(position=position_dodge(width = .8), trim = T, alpha = 0.5) +
-  geom_jitter(position=position_jitterdodge(0.12), cex=2, alpha = 0.6)+
-  geom_hline(yintercept = c(2.35, log10(lod.uRDT.qpcr$lod$lod), log10(lod.RDT.qpcr$lod$lod), 3.45))+
-  scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
-  theme_classic()+
-  ylab("Parasites/mL")+
-  theme(axis.title.y = element_text(size=10), axis.title.x = element_blank())+
-  theme(axis.text= element_text(size=10))+
-  theme(legend.position = "bottom")+
-  scale_y_continuous(breaks = 0:4, labels = c(1, 10, 100, 1000, 10000))
-
-
-plot.qPCR_hist<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
-  ggplot(aes(x = log10(pden_mean), color = result, fill = result)) +
-  geom_histogram(position = "stack", bins = 60) +
-  labs(y = "# of samples or iids",
-       x = "Parasites/mL in log10 scale",
-       color = "Result",
-       fill = "Result") +
-  facet_wrap(.~test, nrow = 2)+
-  scale_color_manual(values = c("dodgerblue4", "firebrick3"))+
-  scale_fill_manual(values = c("dodgerblue4", "firebrick3"))+
-  theme_classic()+
-  theme(plot.title = element_text(hjust = 0, size = 11)) +
-  theme(axis.title.x = element_text(size = 10)) +
-  theme(axis.title.y = element_text(size = 10)) +
-  theme(axis.text = element_text(size = 10), legend.position = "none")+
-  scale_x_continuous(breaks = 0:4, labels = c(1, 10, 100, 1000, 10000))
-
-
-plot.qPCR_prop<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
-  fx_prop.hist.plot(bins = 20,
-                  quant.var = "pden_mean",
-                  qual.var = "result",
-                  group.var = "test",
-                  log.scale = TRUE,
-                  colors = c("dodgerblue4", "firebrick3"),
-                  y.title = "Proportion of samples or iids",
-                  x.title = "Parasites/mL in log10 scale",
-                  legend.title = "Result",
-                  legend.position = "none")
-
-
 lod.hrp2.plot <- lod.hrp2 %>% ggplot(aes(x = concentration, y = prob, color = test)) +
     geom_line()+
     geom_ribbon(aes(ymin = lower, ymax = upper, fill = test), alpha = 0.2, linetype = 3) +
-    geom_vline(xintercept = c(lod.RDT.hrp2$lod$lod, lod.RDT.hrp2$lod$lower, lod.RDT.hrp2$lod$upper), color = c("dodgerblue3", "dodgerblue1", "dodgerblue1"), size = 1, linetype = c(1,3,3)) +
-    geom_vline(xintercept = c(lod.uRDT.hrp2$lod$lod, lod.uRDT.hrp2$lod$lower, lod.uRDT.hrp2$lod$upper), color = c("firebrick3", "firebrick1", "firebrick1"), size = 1, linetype = c(1,3,3)) +
+    geom_vline(xintercept = c(lod.RDT.hrp2$lod$lod, lod.RDT.hrp2$lod$lower, lod.RDT.hrp2$lod$upper), color = c("coral", "coral", "coral"), size = 1, linetype = c(1,3,3)) +
+    geom_vline(xintercept = c(lod.uRDT.hrp2$lod$lod, lod.uRDT.hrp2$lod$lower, lod.uRDT.hrp2$lod$upper), color = c("firebrick3", "firebrick3", "firebrick3"), size = 1, linetype = c(1,3,3)) +
   geom_point(x = lod.RDT.hrp2$lod$lod, y = 0.95, color = "black") +
   geom_point(x = lod.uRDT.hrp2$lod$lod, y = 0.95, color = "black") +
   geom_text(aes(x = lod.RDT.hrp2$lod$lod*1.1, y = 0.9), label = round(lod.RDT.hrp2$lod$lod, 2), color = "black", size = 3.2 )+
   geom_text(aes(x = lod.uRDT.hrp2$lod$lod*0.8, y = 0.95), label = round(lod.uRDT.hrp2$lod$lod, 2), color = "black", size = 3.2 )+
     theme_bw() +
-  scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
-  scale_fill_manual(values = c("dodgerblue4", "firebrick4"))+
+  scale_color_manual(values = c("coral", "firebrick4"))+
+  scale_fill_manual(values = c("coral", "firebrick4"))+
     labs(y = "Proportion of positive results",
          x = "HRP2 pg/mL",
          color = "Test",
@@ -544,20 +588,56 @@ lod.hrp2.plot <- lod.hrp2 %>% ggplot(aes(x = concentration, y = prob, color = te
     scale_y_continuous(expand = c(0, 0.02*max(lod.hrp2$upper)), breaks = seq(0, 1, 0.1))+
   theme(axis.text.x = element_text(angle = 45,vjust = 0.5))
 
+
+plot.qPCR_hist<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
+  mutate(result2 = case_when(result=="Negative"~"g1",
+                             test == "RDT"&result=="Positive"~"g2",
+                             test == "uRDT"&result=="Positive"~"g3"))%>%
+  ggplot(aes(x = log10(pden_mean), color = result2, fill = result2)) +
+  geom_histogram(position = "stack", bins = 60) +
+  labs(y = "# of samples or iids",
+       x = "Parasites/uL in log10 scale") +
+  facet_wrap(.~test, nrow = 2)+
+  scale_color_manual(values = c("dodgerblue4", "coral", "firebrick3"))+
+  scale_fill_manual(values = c("dodgerblue4", "coral", "firebrick3"))+
+  theme_classic()+
+  theme(plot.title = element_text(hjust = 0, size = 11)) +
+  theme(axis.title.x = element_text(size = 10)) +
+  theme(axis.title.y = element_text(size = 10)) +
+  theme(axis.text = element_text(size = 10), legend.position = "none")+
+  scale_x_continuous(breaks = 0:4, labels = c(1, 10, 100, 1000, 10000))
+
+
+plot.qPCR_prop<-iid_ldf %>% filter(test == "RDT" | test == "uRDT") %>%
+  mutate(result2 = case_when(result=="Negative"~"g1",
+                             test == "RDT"&result=="Positive"~"g2",
+                             test == "uRDT"&result=="Positive"~"g3"))%>%
+  fx_prop.hist.plot(bins = 20,
+                  quant.var = "pden_mean",
+                  qual.var = "result2",
+                  group.var = "test",
+                  log.scale = TRUE,
+                  colors = c("dodgerblue4", "coral", "firebrick3"),
+                  y.title = "Proportion of samples or iids",
+                  x.title = "Parasites/uL in log10 scale",
+                  legend.title = "Result",
+                  legend.position = "none")
+
+
 lod.qPCR.plot <- lod.qpcr %>% ggplot(aes(x = concentration, y = prob, color = test)) +
     geom_line()+
     geom_ribbon(aes(ymin = lower, ymax = upper, fill = test), alpha = 0.2, linetype = 3) +
-    geom_vline(xintercept = c(lod.RDT.qpcr$lod$lod, lod.RDT.qpcr$lod$lower), color = c("dodgerblue3", "dodgerblue1"), size = 1, linetype = c(1,3)) +
-    geom_vline(xintercept = c(lod.uRDT.qpcr$lod$lod, lod.uRDT.qpcr$lod$lower), color = c("firebrick3", "firebrick1"), size = 1, linetype = c(1,3)) +
+    geom_vline(xintercept = c(lod.RDT.qpcr$lod$lod, lod.RDT.qpcr$lod$lower), color = c("coral", "coral"), size = 1, linetype = c(1,3)) +
+    geom_vline(xintercept = c(lod.uRDT.qpcr$lod$lod, lod.uRDT.qpcr$lod$lower), color = c("firebrick3", "firebrick3"), size = 1, linetype = c(1,3)) +
   geom_point(x = lod.RDT.qpcr$lod$lod, y = 0.95, color = "black") +
   geom_point(x = lod.uRDT.qpcr$lod$lod, y = 0.95, color = "black") +
   geom_text(aes(x = lod.RDT.qpcr$lod$lod*1.1, y = 0.9), label = round(lod.RDT.qpcr$lod$lod, 2), color = "black", size = 3.2 )+
   geom_text(aes(x = lod.uRDT.qpcr$lod$lod*0.8, y = 0.95), label = round(lod.uRDT.qpcr$lod$lod, 2), color = "black", size = 3.2 )+
     theme_bw() +
-  scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
-  scale_fill_manual(values = c("dodgerblue4", "firebrick4"))+
+  scale_color_manual(values = c("coral", "firebrick4"))+
+  scale_fill_manual(values = c("coral", "firebrick4"))+
     labs(y = "Proportion of positive results",
-         x = "Parasites/mL",
+         x = "Parasites/uL",
          color = "Test",
          fill = "Test") +
     theme(plot.title = element_text(hjust = 0, size = 11),
@@ -575,15 +655,16 @@ plot.qPCR_hist2<- iid_wdf %>%
                names_to = "test",
                values_to = "result") %>%
   filter(test == "RDT" | test == "uRDT") %>%
-  ggplot(aes(x = log10(pden_mean), color = result, fill = result)) +
+  mutate(result2 = case_when(result=="Negative"~"g1",
+                             test == "RDT"&result=="Positive"~"g2",
+                             test == "uRDT"&result=="Positive"~"g3"))%>%
+  ggplot(aes(x = log10(pden_mean), color = result2, fill = result2)) +
   geom_histogram(position = "stack", bins = 60) +
   labs(y = "# of samples or iids",
-       x = "Parasites/mL in log10 scale",
-       color = "Result",
-       fill = "Result") +
+       x = "Parasites/uL in log10 scale") +
   facet_wrap(.~test, nrow = 2)+
-  scale_color_manual(values = c("dodgerblue4", "firebrick3"))+
-  scale_fill_manual(values = c("dodgerblue4", "firebrick3"))+
+  scale_color_manual(values = c("dodgerblue4", "coral", "firebrick3"))+
+  scale_fill_manual(values = c("dodgerblue4", "coral", "firebrick3"))+
   theme_classic()+
   theme(plot.title = element_text(hjust = 0, size = 11)) +
   theme(axis.title.x = element_text(size = 10)) +
@@ -599,34 +680,34 @@ plot.qPCR_prop2 <- iid_wdf %>%
                names_to = "test",
                values_to = "result") %>%
   filter(test == "RDT" | test == "uRDT") %>%
+  mutate(result2 = case_when(result=="Negative"~"g1",
+                             test == "RDT"&result=="Positive"~"g2",
+                             test == "uRDT"&result=="Positive"~"g3"))%>%
   fx_prop.hist.plot(bins = 20,
                     quant.var = "pden_mean",
-                    qual.var = "result",
+                    qual.var = "result2",
                     group.var = "test",
                     log.scale = TRUE,
-                    colors = c("dodgerblue4", "firebrick3"),
+                    colors = c("dodgerblue4", "coral", "firebrick3"),
                     y.title = "Proportion of samples or iids",
-                    x.title = "Parasites/mL in log10 scale",
+                    x.title = "Parasites/uL in log10 scale",
                     legend.title = "Result",
                     legend.position = "none")
-
-
-
 
 lod.qPCR.plot2 <- lod.qpcr2 %>% ggplot(aes(x = concentration, y = prob, color = test)) +
   geom_line()+
   geom_ribbon(aes(ymin = lower, ymax = upper, fill = test), alpha = 0.2, linetype = 3) +
-  geom_vline(xintercept = c(lod.RDT.qpcr2$lod$lod, lod.RDT.qpcr2$lod$lower), color = c("dodgerblue3", "dodgerblue1"), size = 1, linetype = c(1,3)) +
-  geom_vline(xintercept = c(lod.uRDT.qpcr2$lod$lod, lod.uRDT.qpcr2$lod$lower), color = c("firebrick3", "firebrick1"), size = 1, linetype = c(1,3)) +
+  geom_vline(xintercept = c(lod.RDT.qpcr2$lod$lod, lod.RDT.qpcr2$lod$lower), color = c("coral", "coral"), size = 1, linetype = c(1,3)) +
+  geom_vline(xintercept = c(lod.uRDT.qpcr2$lod$lod, lod.uRDT.qpcr2$lod$lower), color = c("firebrick3", "firebrick3"), size = 1, linetype = c(1,3)) +
   geom_point(x = lod.RDT.qpcr2$lod$lod, y = 0.95, color = "black") +
   geom_point(x = lod.uRDT.qpcr2$lod$lod, y = 0.95, color = "black") +
   geom_text(aes(x = lod.RDT.qpcr2$lod$lod*1.1, y = 0.9), label = round(lod.RDT.qpcr2$lod$lod, 2), color = "black", size = 3.2 )+
   geom_text(aes(x = lod.uRDT.qpcr2$lod$lod*0.8, y = 0.95), label = round(lod.uRDT.qpcr2$lod$lod, 2), color = "black", size = 3.2 )+
   theme_bw() +
-  scale_color_manual(values = c("dodgerblue4", "firebrick4"))+
-  scale_fill_manual(values = c("dodgerblue4", "firebrick4"))+
+  scale_color_manual(values = c("coral", "firebrick4"))+
+  scale_fill_manual(values = c("coral", "firebrick4"))+
   labs(y = "Proportion of positive results",
-       x = "Parasites/mL",
+       x = "Parasites/uL",
        color = "Test",
        fill = "Test") +
   theme(plot.title = element_text(hjust = 0, size = 11),
@@ -651,7 +732,7 @@ plot1 <- plot_grid(plot_grid(plot.HRP2_hist,
 plot1
 
 ```
-<p style="font-size:8pt; font-style:italic">**Figure 3:** Performance of RDT and uRDT taking as reference HRP2 results (**A**, **B** and **C**), qPCR (**D**, **E** and **F**), and qPCR without HRP2 negative results and samples with parasite densities about 1000 parasites/uL (**G**, **H** and **I**). Figures **A**, **D** and **G** represents the  distribution of the number negative (Blue) and positive (red) samples per range of HRP2 concentration or parasite density. Figures **B**, **E** and **H** represents the  proportion of negative (Blue) and positive (Red) samples per range of HRP2 concentration or parasite density. Finally, figures **C**, **F** and **I** show the binomial logistic regression model of the relation between proportion of positive results by RDT (Blue) or by uRDT (Red) and the concentration of the HRP2 protein or the parasite density. Solid lines represent the estimated limit of detection of each method, and dotted lines its confidence intervals.</p>
+<p style="font-size:8pt; font-style:italic">**Figure 3:** Performance of RDT and uRDT taking as reference HRP2 results (**A**, **B** and **C**), qPCR (**D**, **E** and **F**), and qPCR without HRP2 negative results and samples with parasite densities about 1000 parasites/uL (**G**, **H** and **I**). Figures **A**, **D** and **G** represents the  distribution of the number negative (dark blue) and positive samples by RDT (coral) and uRDT (dark red) per range of HRP2 concentration or parasite density. Figures **B**, **E** and **H** represents the  proportion of negative and positive samples per range of HRP2 concentration or parasite density. Finally, figures **C**, **F** and **I** show the binomial logistic regression model of the relation between proportion of positive results by RDT (coral) or by uRDT (dark red) and the concentration of the HRP2 protein or the parasite density. Solid lines represent the estimated limit of detection of each method, and dotted lines thier confidence intervals.</p>
 
 
 
